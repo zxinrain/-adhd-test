@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>成人 ADHD 初步筛查</title>
+  <style>
+    :root{--bg:#f5f7fb;--card:#fff;--text:#1f2937;--muted:#6b7280;--line:#e5e7eb;--accent:#2563eb;--accent-soft:#eff6ff;--warn:#b45309;--warn-bg:#fffbeb;--ok-bg:#ecfdf5;--danger-bg:#fef2f2;--shadow:0 14px 40px rgba(15,23,42,.08);--radius:22px}
+    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:radial-gradient(circle at top left,rgba(37,99,235,.10),transparent 32%),linear-gradient(180deg,#f8fafc 0%,var(--bg) 100%);color:var(--text)}
+    .wrap{max-width:900px;margin:0 auto;padding:34px 18px 64px}.hero{background:linear-gradient(135deg,#111827,#1d4ed8);color:#fff;border-radius:28px;padding:32px;box-shadow:var(--shadow);margin-bottom:22px}.hero h1{margin:0 0 10px;font-size:clamp(28px,5vw,46px);line-height:1.08}.hero p{margin:0;color:rgba(255,255,255,.84);font-size:16px;line-height:1.7}.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.14);font-size:13px;margin-bottom:18px}
+    .card{background:var(--card);border:1px solid rgba(229,231,235,.9);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:18px}.note{border-left:4px solid var(--warn);background:var(--warn-bg);color:#78350f;padding:14px 16px;border-radius:14px;line-height:1.65;margin-bottom:20px;font-size:14px}.progress-wrap{margin:6px 0 22px}.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-bottom:8px}.progress{height:10px;background:#eef2f7;border-radius:999px;overflow:hidden}.progress>div{height:100%;width:0;background:linear-gradient(90deg,#2563eb,#60a5fa);transition:.25s ease}
+    .question{padding:20px 0;border-bottom:1px solid var(--line)}.question:last-child{border-bottom:0}.q-title{font-size:18px;font-weight:700;line-height:1.5;margin-bottom:14px}.q-no{display:inline-flex;width:28px;height:28px;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent);border-radius:9px;margin-right:8px;font-size:14px}.options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}label.option{cursor:pointer}.option input{display:none}.option span{display:flex;align-items:center;justify-content:center;text-align:center;min-height:46px;padding:8px;border:1px solid var(--line);border-radius:13px;color:#374151;background:#fff;transition:.18s ease;font-size:14px}.option input:checked+span{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700;box-shadow:0 0 0 3px rgba(37,99,235,.10)}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}button{border:0;border-radius:14px;padding:14px 20px;font-weight:700;font-size:15px;cursor:pointer}.primary{background:var(--accent);color:#fff;flex:1}.secondary{background:#eef2f7;color:#334155}.result{display:none}.result.show{display:block}.result-box{padding:20px;border-radius:18px;margin-top:14px;line-height:1.7}.result-box.low{background:var(--ok-bg);color:#065f46;border:1px solid #a7f3d0}.result-box.mid{background:var(--warn-bg);color:#92400e;border:1px solid #fde68a}.result-box.high{background:var(--danger-bg);color:#991b1b;border:1px solid #fecaca}.score{font-size:38px;font-weight:800;line-height:1;margin:6px 0 12px}.detail{color:var(--muted);font-size:14px;line-height:1.75}.footer{color:#64748b;font-size:13px;line-height:1.7;text-align:center;margin-top:24px}
+    @media(max-width:720px){.hero{padding:24px}.card{padding:18px}.options{grid-template-columns:1fr}.option span{justify-content:flex-start;padding-left:14px}.actions{flex-direction:column}.primary{width:100%}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero"><div class="badge">🧠 成人 ADHD 自我筛查</div><h1>过去 6 个月，你是否经常出现这些情况？</h1><p>请按实际频率作答。该工具用于初步筛查，不等同于医学诊断。</p></section>
+    <section class="card">
+      <div class="note">重要提示：ADHD 的正式诊断需要结合童年史、多个生活场景中的表现、功能受损程度，并排除焦虑、抑郁、睡眠不足、甲状腺问题及药物影响等其他原因。</div>
+      <div class="progress-wrap"><div class="progress-label"><span>答题进度</span><span id="progressText">0 / 6</span></div><div class="progress"><div id="progressBar"></div></div></div>
+      <form id="quiz"><div id="questions"></div><div class="actions"><button class="primary" type="submit">查看筛查结果</button><button class="secondary" type="button" id="resetBtn">重新作答</button></div></form>
+    </section>
+    <section class="card result" id="resultCard"><h2 style="margin-top:0">筛查结果</h2><div id="resultBox" class="result-box"></div><p class="detail">结果仅表示“是否值得进一步评估”，不能证明你一定患有 ADHD。若相关表现从 12 岁前已经存在、在工作与家庭等多个场景中持续出现，并明显影响生活，建议预约精神科或成人 ADHD 专病门诊。</p></section>
+    <div class="footer">本页不保存、不上传任何答题数据。所有计算均在你的设备本地完成。</div>
+  </main>
+  <script>
+    const questions=["完成最困难的部分后，是否很难把最后的收尾工作完成？","需要做有条理的事情时，是否经常难以组织和安排？","是否经常忘记约会、任务或原本应该做的事情？","当需要长时间动脑时，是否会拖延或避免开始？","是否经常坐立不安，需要抖腿、转笔或不断活动？","是否经常感觉自己像被马达驱动一样，很难真正停下来？"];
+    const labels=["从不","很少","有时","经常","非常经常"],container=document.getElementById("questions");
+    questions.forEach((q,i)=>{const block=document.createElement("div");block.className="question";block.innerHTML=`<div class="q-title"><span class="q-no">${i+1}</span>${q}</div><div class="options">${labels.map((label,value)=>`<label class="option"><input type="radio" name="q${i}" value="${value}"><span>${label}</span></label>`).join("")}</div>`;container.appendChild(block)});
+    function updateProgress(){let answered=0;questions.forEach((_,i)=>{if(document.querySelector(`input[name="q${i}"]:checked`))answered++});document.getElementById("progressText").textContent=`${answered} / 6`;document.getElementById("progressBar").style.width=`${answered/6*100}%`}
+    document.querySelectorAll('input[type="radio"]').forEach(input=>input.addEventListener("change",updateProgress));
+    document.getElementById("quiz").addEventListener("submit",function(e){e.preventDefault();const values=[];for(let i=0;i<6;i++){const checked=document.querySelector(`input[name="q${i}"]:checked`);if(!checked){alert(`请先完成第 ${i+1} 题`);return}values.push(Number(checked.value))}const positive=values.filter(v=>v>=3).length,total=values.reduce((a,b)=>a+b,0),card=document.getElementById("resultCard"),box=document.getElementById("resultBox");card.classList.add("show");let cls,title,text;if(positive>=4){cls="high";title="筛查提示：建议进一步专业评估";text="你有 4 项或以上回答为“经常”或“非常经常”。这提示可能存在较明显的注意力或执行功能困难，建议结合童年表现和现实功能受损情况，预约专业医生进一步评估。"}else if(positive>=2){cls="mid";title="筛查提示：存在部分相关表现";text="你存在若干与 ADHD 相似的表现，但目前不足以仅凭本筛查判断。建议继续观察这些表现是否长期存在、是否跨多个场景出现，以及是否明显影响工作、学习或生活。"}else{cls="low";title="筛查提示：当前风险相对较低";text="你的回答未显示出较多高频相关表现。但如果你仍然感到注意力、拖延、遗忘或组织能力明显影响生活，仍可寻求专业评估。"}box.className=`result-box ${cls}`;box.innerHTML=`<div>${title}</div><div class="score">${positive} / 6</div><div>${text}</div><div style="margin-top:10px;font-size:13px;opacity:.8">频率总分：${total} / 24</div>`;card.scrollIntoView({behavior:"smooth",block:"start"})});
+    document.getElementById("resetBtn").addEventListener("click",function(){document.getElementById("quiz").reset();updateProgress();document.getElementById("resultCard").classList.remove("show");window.scrollTo({top:0,behavior:"smooth"})});
+  </script>
+</body>
+</html>
