@@ -4,4 +4,6 @@
 
 在线地址：https://zxinrain.github.io/-adhd-test/
 
+发布方式：GitHub Pages 从 `gh-pages` 分支根目录直接发布，不依赖 GitHub Actions。
+
 > 本工具仅用于初步筛查，不能替代精神科医生或临床心理专业人员的正式诊断。
